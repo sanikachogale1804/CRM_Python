@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Permission Management | Smart CRM{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/permission_management.css?v=2.1.1">
+
+<div class="permissions-page">
+  <!-- Page Header with Back Button -->
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Security & Access</p>
+      <h1><i class="fas fa-shield-alt"></i>Permission Management</h1>
+      <p class="subtext">Select a user to manage their permissions.</p>
+    </div>
+    <a href="/users" class="btn ghost"><i class="fas fa-arrow-left"></i><span>Back to Users</span></a>
+  </div>
+
+  <!-- Users Grid -->
+  <div id="usersContainer" class="users-grid">
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading users...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Permission Management Modal -->
+<div id="permissionModal" class="modal">
+  <div class="modal-overlay" onclick="closePermissionModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2>
+        <i class="fas fa-user-shield"></i>
+        <span id="modalUserName">User Permissions</span>
+      </h2>
+      <button class="modal-close" onclick="closePermissionModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="permission-controls">
+        <button class="btn ghost small" id="expandAllBtn"><i class="fas fa-plus-square"></i><span>Expand All</span></button>
+        <button class="btn ghost small" id="collapseAllBtn"><i class="fas fa-minus-square"></i><span>Collapse All</span></button>
+      </div>
+      <div id="treeContainer" class="tree-container"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closePermissionModal()">Cancel</button>
+      <button class="btn primary" id="saveBtn" onclick="savePermissions()">
+        <i class="fas fa-save"></i><span>Save Permissions</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script src="/static/js/permission_management.js?v=2.1.1"></script>
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}Control Panel | Smart CRM{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/static/control_panel.css?v=2.1.1">
+
+<div class="control-panel-page">
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">System Management</p>
+            <h1>Control Panel</h1>
+            <p class="subtext">Manage users, system settings, and application configuration</p>
+        </div>
+        <div class="header-stats">
+            <div class="stat-badge">
+                <i class="fas fa-database"></i>
+                <div>
+                    <span class="stat-label">Total Leads</span>
+                    <strong id="total-leads-count" class="stat-value">0</strong>
+                </div>
+            </div>
+            <div class="stat-badge success">
+                <i class="fas fa-users"></i>
+                <div>
+                    <span class="stat-label">Active Users</span>
+                    <strong id="active-users-count" class="stat-value">0</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Panel Grid -->
+    <div class="control-grid">
+                <!-- Security & Audit Card (single, with correct link) -->
+                <div class="control-card" onclick="window.location.href='/security-audit'">
+                    <div class="card-icon security">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Security & Audit</h3>
+                        <p>Monitor user activity, security logs, and access patterns</p>
+                        <div class="card-stats">
+                            <span><i class="fas fa-history"></i> Activity Logs</span>
+                            <span><i class="fas fa-lock"></i> Security Events</span>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+        <!-- User Management Card -->
+        <div class="control-card" onclick="window.location.href='/users'">
+            <div class="card-icon user-management">
+                <i class="fas fa-users-cog"></i>
+            </div>
+            <div class="card-content">
+                <h3>User Management</h3>
+                <p>Add, edit, and manage system users with role-based access control</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-user-check"></i> <strong id="users-active">0</strong> Active</span>
+                    <span><i class="fas fa-user-times"></i> <strong id="users-inactive">0</strong> Inactive</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Lead Settings Card -->
+        <div class="control-card" onclick="window.location.href='/lead-settings'">
+            <div class="card-icon lead-settings">
+                <i class="fas fa-sliders-h"></i>
+            </div>
+            <div class="card-content">
+                <h3>Lead Settings</h3>
+                <p>Configure lead sources, statuses, and workflow automation</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-list"></i> Custom Fields</span>
+                    <span><i class="fas fa-sync"></i> Automation Rules</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Reports & Analytics Card -->
+        <div class="control-card">
+            <div class="card-icon reports">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="card-content">
+                <h3>Reports & Analytics</h3>
+                <p>Generate detailed reports and export data for analysis</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-file-export"></i> Export Data</span>
+                    <span><i class="fas fa-download"></i> Download Reports</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- System Settings Card -->
+        <div class="control-card">
+            <div class="card-icon system-settings">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div class="card-content">
+                <h3>System Settings</h3>
+                <p>Configure system preferences, notifications, and integrations</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-bell"></i> Notifications</span>
+                    <span><i class="fas fa-plug"></i> Integrations</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Database Management Card -->
+        <div class="control-card">
+            <div class="card-icon database">
+                <i class="fas fa-database"></i>
+            </div>
+            <div class="card-content">
+                <h3>Database Management</h3>
+                <p>Backup, restore, and optimize database performance</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-hdd"></i> <strong id="db-size">0 MB</strong></span>
+                    <span><i class="fas fa-clock"></i> Last Backup: <strong id="last-backup">Never</strong></span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+
+
+        <!-- Email Configuration Card -->
+        <div class="control-card">
+            <div class="card-icon email">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="card-content">
+                <h3>Email Configuration</h3>
+                <p>Setup SMTP settings and email templates for notifications</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-paper-plane"></i> Email Templates</span>
+                    <span><i class="fas fa-server"></i> SMTP Settings</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Import/Export Card -->
+        <div class="control-card">
+            <div class="card-icon import-export">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+            <div class="card-content">
+                <h3>Import / Export</h3>
+                <p>Bulk import leads from CSV/Excel and export data</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-upload"></i> Import Data</span>
+                    <span><i class="fas fa-download"></i> Export All</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Target Management Card -->
+        <div class="control-card" onclick="window.location.href='/target-management'">
+            <div class="card-icon target-management">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <div class="card-content">
+                <h3>Target Management</h3>
+                <p>Set and track sales targets, goals, and performance metrics</p>
+                <div class="card-stats">
+                    <span><i class="fas fa-flag"></i> Active Targets</span>
+                    <span><i class="fas fa-chart-line"></i> Performance</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Panel -->
+    <div class="quick-actions-panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <div class="icon-pill">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div>
+                    <h3>Quick Actions</h3>
+                    <p>Common administrative tasks at your fingertips</p>
+                </div>
+            </div>
+        </div>
+        <div class="quick-actions-grid">
+            <button class="quick-action-btn" onclick="createBackup()">
+                <i class="fas fa-save"></i>
+                <span>Create Backup</span>
+            </button>
+            <button class="quick-action-btn" onclick="exportLeads()">
+                <i class="fas fa-file-export"></i>
+                <span>Export Leads</span>
+            </button>
+            <button class="quick-action-btn" onclick="viewLogs()">
+                <i class="fas fa-list-alt"></i>
+                <span>View Logs</span>
+            </button>
+            <button class="quick-action-btn" onclick="systemStatus()">
+                <i class="fas fa-heartbeat"></i>
+                <span>System Status</span>
+            </button>
+            <button class="quick-action-btn" onclick="clearCache()">
+                <i class="fas fa-broom"></i>
+                <span>Clear Cache</span>
+            </button>
+            <button class="quick-action-btn" onclick="refreshStats()">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh Stats</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- System Information Panel -->
+    <div class="system-info-panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <div class="icon-pill">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div>
+                    <h3>System Information</h3>
+                    <p>Current system status and details</p>
+                </div>
+            </div>
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Version</span>
+                <span class="info-value">v2.1.0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Database</span>
+                <span class="info-value">SQLite 3</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Server</span>
+                <span class="info-value">FastAPI/Uvicorn</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Uptime</span>
+                <span class="info-value" id="system-uptime">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Total Records</span>
+                <span class="info-value" id="total-records">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Last Activity</span>
+                <span class="info-value" id="last-activity">-</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/control_panel.js?v=2.1.1"></script>
+{% endblock %}

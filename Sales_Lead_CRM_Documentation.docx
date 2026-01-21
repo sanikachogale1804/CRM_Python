@@ -1,0 +1,75 @@
+# Sales Lead CRM - Project Documentation
+
+## Overview
+This document provides a summary and description of all files and folders in the Sales Lead CRM project (v2.1.0). It covers Python backend scripts, HTML templates, JavaScript frontend logic, and static assets.
+
+---
+
+## Python Backend Files
+
+- **main.py**: FastAPI application entry point. Handles API endpoints, session validation, user activity logging, and includes routers for security and audit APIs.
+- **database.py**: Manages MySQL database connections using PyMySQL. Handles connection pooling, initialization, and provides helper functions for database access.
+- **analyze_lead_status.py**: Debug script to analyze lead status names and percentage calculations. Connects to MySQL, fetches status configuration, and compares with actual database values.
+- **check_latest_leads.py**: Script to fetch and print the latest leads and their history from the database for quick inspection.
+- **debug_status_percentages.py**: Debug utility to check and print status percentage configuration from the database, ensuring correct JSON format and mapping.
+- **recalculate_lead_percentages.py**: Script to recalculate and update all lead percentages in the database based on current status configuration.
+- **verify_integration.py**: Verifies database tables, structure, and sample data for lead settings. Also checks API endpoint implementations.
+- **verify_lead_settings_expansion.py**: Comprehensive verification script for new lead settings tabs, form fields, JavaScript functions, and database persistence.
+- **verify_targets.py**: Checks for correct implementation of target management API endpoints and frontend JavaScript updates.
+- **test_admin_fix.py**: Tests admin permission fixes, ensuring admin users have all permissions in the database and correct data is returned by the login endpoint.
+- **test_permission_manager.js**: Node.js script to test the PermissionManager logic, simulating browser storage and permission handling.
+
+---
+
+## Templates (HTML)
+
+- **base.html**: Main HTML template with layout, sidebar, and style includes. Used as the base for all other templates.
+- **dashboard.html**: Dashboard page showing KPIs, charts, and summary statistics. Extends base.html.
+- **leads.html**: Main leads management page. Includes filters, actions, and a dynamic leads table.
+- **lead_settings.html**: Lead settings configuration page. Allows management of sources, statuses, types, industries, and system preferences.
+- **Other templates**: Include add_lead.html, control_panel.html, edit_lead.html, lead_detail.html, login.html, permission_management.html, security_audit.html, target_management.html, users.html for respective features and UI screens.
+
+---
+
+## Static Assets
+
+### JavaScript (static/js/)
+- **permission_management.js**: Handles user permission management UI, including user grid, permission tree, and modal logic.
+- **leads.js**: Manages leads page logic, session validation, and user permissions for lead actions.
+- **lead_settings.js**: Controls lead settings UI, including tabs for sources, statuses, types, and more.
+- **dashboard.js**: Loads dashboard data, initializes UI, and handles navigation highlighting.
+- **Other JS files**: Include add_lead.js, common.js, control_panel.js, login.js, target_management.js, users.js for respective page logic.
+
+### CSS (static/)
+- **style.css**: Main stylesheet for the application.
+- **dashboard.css, lead_settings.css, permission_management.css, etc.**: Page-specific stylesheets.
+
+### Uploads (static/uploads/)
+- **users/**: Contains user-uploaded images (e.g., profile pictures).
+
+---
+
+## Tools (tools/)
+- **add_description_column.py**: Adds a description column to a database table.
+- **audit_system_info_api.py**: API for system audit information.
+- **check_audit.py**: Checks audit logs or tables.
+- **security_audit_table_api.py**: API for security audit table management.
+
+---
+
+## Project Structure
+- **__pycache__/**: Python bytecode cache.
+- **static/**: All static files (CSS, JS, images, uploads).
+- **templates/**: All HTML templates for rendering UI.
+- **tools/**: Utility and API scripts for backend/admin tasks.
+
+---
+
+## Notes
+- The backend is primarily Python (FastAPI, PyMySQL, SQLite for some scripts).
+- The frontend uses HTML (Jinja2 templating), CSS, and vanilla JavaScript.
+- The project is modular, with clear separation between backend logic, frontend templates, and static assets.
+
+---
+
+*Generated on 2026-01-11 by GitHub Copilot (GPT-4.1)*

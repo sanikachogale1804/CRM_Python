@@ -1,0 +1,17 @@
+Tools Scripts Documentation
+
+1. add_description_column.py
+- Script to add a description column to a database table
+
+2. audit_system_info_api.py
+- API script for auditing system information
+
+3. check_audit.py
+- Script to check audit logs or entries
+
+4. security_audit_table_api.py
+- API script for managing security audit table
+
+Each tool script is used for database management, auditing, or API operations.
+
+For details, refer to the respective tool script files.

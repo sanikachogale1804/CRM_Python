@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Lead Reports - Smart CRM{% endblock %}
+
+{% block content %}
+<div class="content-container" style="margin: 0; padding: 0; width: 100%;">
+    <div class="content-header" style="margin-bottom: 25px; padding: 20px; background: #0d6efd; border-radius: 12px; color: white; box-shadow: 0 4px 20px rgba(13, 110, 253, 0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <h2 style="margin: 0; font-weight: 700; font-size: 2rem; color: white;">
+                    <i class="fas fa-chart-bar" style="margin-right: 10px;"></i>
+                    Lead Reports
+                </h2>
+                <div style="font-size: 1em; opacity: 0.9; margin-top: 8px;">
+                    View reports for this lead
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a href="/lead-detail/{{ lead_id }}" class="btn" style="padding: 10px 20px; background: rgba(255,255,255,0.2); border: none; border-radius: 8px; color: white; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-arrow-left"></i> Back to Lead
+                </a>
+                <button class="btn btn-success" style="padding: 10px 20px; background: #198754; border: none; border-radius: 8px; color: white; font-weight: 500; display: flex; align-items: center; gap: 8px;" onclick="openUploadModal()">
+                    <i class="fas fa-upload"></i> Upload Report
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="lead-reports-content" style="background: white; border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #dee2e6; min-height: 300px;">
+        <h3 style="margin: 0 0 20px 0; font-size: 1.5rem; font-weight: 700; color: #212529;">
+            <i class="fas fa-file-alt" style="color: #198754; margin-right: 10px;"></i>
+            Reports for Lead ID: <span style="color: #198754;">{{ lead_id }}</span>
+        </h3>
+        <div id="reports-list">
+            {% for report in reports %}
+            <div class="report-card" style="border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-weight: 600; font-size: 1.1em;">{{ report.name }}</div>
+                    <div style="color: #6c757d; font-size: 0.95em;">{{ report.description }}</div>
+                    <div style="color: #adb5bd; font-size: 0.85em;">Uploaded: {{ report.uploaded_at }} | By: {{ report.uploaded_by }}</div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="format-{{ report.id }}" class="form-select" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #dee2e6; font-size: 0.95em;">
+                        <option value="pdf">PDF</option>
+                    </select>
+                    <button class="btn btn-primary" style="padding: 8px 16px; border-radius: 6px; color: white; background: #0d6efd; border: none; font-size: 0.95em; display: flex; align-items: center; gap: 6px;" onclick="downloadReport('{{ report.id }}')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn btn-danger" style="padding: 8px 16px; border-radius: 6px; color: white; background: #dc3545; border: none; font-size: 0.95em; display: flex; align-items: center; gap: 6px;" onclick="deleteReport('{{ report.id }}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div style="color: #6c757d;">No reports uploaded yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);">
+        <div class="modal-content" style="background:white; margin:10% auto; padding:30px; border-radius:12px; width:100%; max-width:400px; position:relative;">
+            <span onclick="closeUploadModal()" style="position:absolute; top:10px; right:18px; font-size:1.5em; cursor:pointer;">&times;</span>
+            <h4 style="margin-bottom:18px;">Upload Report</h4>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div style="margin-bottom:12px;">
+                    <label>Report Name</label>
+                    <input type="text" name="name" class="form-control" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #dee2e6;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label>Description</label>
+                    <textarea name="description" class="form-control" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #dee2e6;"></textarea>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label>Choose PDF File</label>
+                    <input type="file" name="file" class="form-control" accept="application/pdf" required style="width:100%;">
+                </div>
+                <button type="submit" class="btn btn-success" style="width:100%; padding:10px; border-radius:8px; background:#198754; color:white; border:none; font-weight:500;">Upload</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function downloadReport(reportId) {
+            const format = document.getElementById('format-' + reportId).value;
+            const url = `/api/lead-report/download/${reportId}?format=${format}`;
+            window.open(url, '_blank');
+        }
+    function openUploadModal() {
+        document.getElementById('uploadModal').style.display = 'block';
+    }
+    function closeUploadModal() {
+        document.getElementById('uploadModal').style.display = 'none';
+    }
+    document.getElementById('uploadForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const leadId = '{{ lead_id }}';
+        const response = await fetch(`/api/lead-report/upload/${leadId}`, {
+            method: 'POST',
+            body: formData
+        });
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            alert('Upload failed');
+        }
+    });
+    async function deleteReport(reportId) {
+        if (!confirm('Delete this report?')) return;
+        const response = await fetch(`/api/lead-report/delete/${reportId}`, { method: 'DELETE' });
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            alert('Delete failed');
+        }
+    }
+    </script>
+    </div>
+</div>
+{% endblock %}

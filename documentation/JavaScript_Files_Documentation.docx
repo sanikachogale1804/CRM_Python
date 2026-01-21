@@ -1,0 +1,39 @@
+JavaScript Files Documentation
+
+1. add_lead.js
+- Handles logic for adding new leads
+- Manages form validation and submission
+
+2. common.js
+- Contains shared utility functions used across modules
+
+3. control_panel.js
+- Manages control panel UI and interactions
+
+4. dashboard.js
+- Handles dashboard data visualization and updates
+
+5. leads.js
+- Manages lead listing, filtering, and actions
+
+6. lead_settings.js
+- Handles lead settings configuration and saving
+
+7. login.js
+- Manages login form and authentication logic
+
+8. permission_management.js
+- Handles user permissions and access control
+
+9. target_management.js
+- Manages target settings and related UI
+
+10. users.js
+- Handles user management features
+
+11. xlsx.full.min.js
+- Library for reading/writing Excel files in browser
+
+Each JS file is focused on a specific module or feature of the CRM system.
+
+For details, refer to the respective JS files.

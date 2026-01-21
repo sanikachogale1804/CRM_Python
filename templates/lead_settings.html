@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block title %}Lead Settings | Smart CRM{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/static/lead_settings.css?v=2.1.1">
+
+<div class="lead-settings-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">Configuration</p>
+            <h1>Lead Settings</h1>
+            <p class="subtext">Configure lead sources, statuses, types, and system preferences</p>
+        </div>
+        <div class="header-actions">
+            <a href="/control-panel" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Control Panel</span>
+            </a>
+            <button class="btn btn-primary" onclick="saveAllSettings()">
+                <i class="fas fa-save"></i>
+                <span>Save All Changes</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Settings Navigation -->
+    <div class="settings-nav">
+        <button class="nav-tab active" data-tab="sources">
+            <i class="fas fa-link"></i>
+            <span>Lead Sources</span>
+        </button>
+        <button class="nav-tab" data-tab="statuses">
+            <i class="fas fa-tasks"></i>
+            <span>Lead Statuses</span>
+        </button>
+        <button class="nav-tab" data-tab="types">
+            <i class="fas fa-tag"></i>
+            <span>Sales Types</span>
+        </button>
+        <button class="nav-tab" data-tab="industries">
+            <i class="fas fa-industry"></i>
+            <span>Industries</span>
+        </button>
+        <button class="nav-tab" data-tab="systems">
+            <i class="fas fa-cogs"></i>
+            <span>Systems</span>
+        </button>
+        <button class="nav-tab" data-tab="project_amc">
+            <i class="fas fa-tasks"></i>
+            <span>Project/AMC</span>
+        </button>
+        <button class="nav-tab" data-tab="prospect">
+            <i class="fas fa-bullseye"></i>
+            <span>Prospect</span>
+        </button>
+        <button class="nav-tab" data-tab="purpose_of_meeting">
+            <i class="fas fa-bullhorn"></i>
+            <span>Purpose of Meeting</span>
+        </button>
+        <button class="nav-tab" data-tab="communication_method">
+            <i class="fas fa-comments"></i>
+            <span>Method of Communication</span>
+        </button>
+        <button class="nav-tab" data-tab="preferences">
+            <i class="fas fa-sliders-h"></i>
+            <span>Preferences</span>
+        </button>
+    </div>
+
+    <!-- Lead Sources Tab -->
+    <div id="sources" class="tab-content active">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-link"></i> Lead Sources</h2>
+                    <p>Manage where your leads come from (Website, Referral, Social Media, etc.)</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewSource()">
+                    <i class="fas fa-plus"></i> Add Source
+                </button>
+            </div>
+            <div class="items-list" id="sourcesList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Lead Statuses Tab -->
+    <div id="statuses" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-tasks"></i> Lead Statuses</h2>
+                    <p>Define the lifecycle stages of your leads (New, Contacted, Converted, etc.)</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewStatus()">
+                    <i class="fas fa-plus"></i> Add Status
+                </button>
+            </div>
+            <div class="items-list" id="statusesList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Types Tab -->
+    <div id="types" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-tag"></i> Sales Types</h2>
+                    <p>Configure sales categories (Inside Sales, Field Sales, etc.)</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewType()">
+                    <i class="fas fa-plus"></i> Add Type
+                </button>
+            </div>
+            <div class="items-list" id="typesList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Industries Tab -->
+    <div id="industries" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-industry"></i> Industry Types</h2>
+                    <p>Manage industry categories for lead classification</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewIndustry()">
+                    <i class="fas fa-plus"></i> Add Industry
+                </button>
+            </div>
+            <div class="items-list" id="industriesList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Systems Tab -->
+    <div id="systems" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-cogs"></i> System Types</h2>
+                    <p>Configure system categories (ERP, CRM, HRMS, etc.)</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewSystem()">
+                    <i class="fas fa-plus"></i> Add System
+                </button>
+            </div>
+            <div class="items-list" id="systemsList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Project/AMC Tab -->
+    <div id="project_amc" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-tasks"></i> Project / AMC Types</h2>
+                    <p>Manage project and AMC type categories for lead classification</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewProjectAMC()">
+                    <i class="fas fa-plus"></i> Add Type
+                </button>
+            </div>
+            <div class="items-list" id="project_amcList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Prospect Tab -->
+    <div id="prospect" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-bullseye"></i> Prospect Types</h2>
+                    <p>Manage prospect categories for lead classification and targeting</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewProspect()">
+                    <i class="fas fa-plus"></i> Add Prospect
+                </button>
+            </div>
+            <div class="items-list" id="prospectList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Purpose of Meeting Tab -->
+    <div id="purpose_of_meeting" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-bullhorn"></i> Purpose of Meeting</h2>
+                    <p>Define meeting purposes and objectives for better tracking</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewPurposeOfMeeting()">
+                    <i class="fas fa-plus"></i> Add Purpose
+                </button>
+            </div>
+            <div class="items-list" id="purpose_of_meetingList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Method of Communication Tab -->
+    <div id="communication_method" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-comments"></i> Method of Communication</h2>
+                    <p>Configure communication channels (Email, Phone, SMS, Chat, etc.)</p>
+                </div>
+                <button class="btn btn-success" onclick="addNewCommunicationMethod()">
+                    <i class="fas fa-plus"></i> Add Method
+                </button>
+            </div>
+            <div class="items-list" id="communication_methodList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferences Tab -->
+    <div id="preferences" class="tab-content">
+        <div class="settings-panel">
+            <div class="panel-header">
+                <div>
+                    <h2><i class="fas fa-sliders-h"></i> System Preferences</h2>
+                    <p>Configure general system settings and behaviors</p>
+                </div>
+            </div>
+            
+            <div class="preferences-grid">
+                <div class="preference-card">
+                    <div class="preference-header">
+                        <i class="fas fa-hashtag"></i>
+                        <h3>Lead ID Format</h3>
+                    </div>
+                    <p>Customize the format for auto-generated lead IDs</p>
+                    <div class="form-group">
+                        <label>Prefix</label>
+                        <input type="text" id="leadIdPrefix" value="CS" maxlength="5" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Starting Number</label>
+                        <input type="number" id="leadIdStart" value="1000000001" class="form-input">
+                    </div>
+                    <small class="text-muted">Example: CS1000000001, CS1000000002...</small>
+                </div>
+
+                <div class="preference-card">
+                    <div class="preference-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Default Follow-up Period</h3>
+                    </div>
+                    <p>Set default number of days for follow-up reminders</p>
+                    <div class="form-group">
+                        <label>Days</label>
+                        <input type="number" id="followUpDays" value="7" min="1" max="365" class="form-input">
+                    </div>
+                    <small class="text-muted">Default period for next follow-up date</small>
+                </div>
+
+                <div class="preference-card">
+                    <div class="preference-header">
+                        <i class="fas fa-clock"></i>
+                        <h3>Lead Aging Alert</h3>
+                    </div>
+                    <p>Get alerts when leads are aging without activity</p>
+                    <div class="form-group">
+                        <label>Alert after (days)</label>
+                        <input type="number" id="agingAlertDays" value="30" min="1" max="365" class="form-input">
+                    </div>
+                    <small class="text-muted">Show warning when lead exceeds this age</small>
+                </div>
+
+                <div class="preference-card">
+                    <div class="preference-header">
+                        <i class="fas fa-bell"></i>
+                        <h3>Email Notifications</h3>
+                    </div>
+                    <p>Enable or disable email notifications</p>
+                    <div class="toggle-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <label for="emailNotifications">Send email notifications</label>
+                    </div>
+                    <div class="toggle-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dailyDigest" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <label for="dailyDigest">Daily digest emails</label>
+                    </div>
+                </div>
+
+                <div class="preference-card">
+                    <div class="preference-header">
+                        <i class="fas fa-list-ol"></i>
+                        <h3>Default Page Size</h3>
+                    </div>
+                    <p>Set default number of records per page in listings</p>
+                    <div class="form-group">
+                        <label>Records per page</label>
+                        <select id="defaultPageSize" class="form-input">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <small class="text-muted">Default pagination size for all lists</small>
+                </div>
+
+                <div class="preference-card">
+                    <div class="preference-header">
+                        <i class="fas fa-percentage"></i>
+                        <h3>Auto Lead Percentage</h3>
+                        <button type="button" class="btn-icon" onclick="openPercentageModal()" style="background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 1.2em; line-height: 1;">+</button>
+                    </div>
+                    <p>Automatically calculate lead percentage based on status</p>
+                    <div class="toggle-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoLeadPercentage" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <label for="autoLeadPercentage">Enable auto-calculation</label>
+                    </div>
+                    <div id="percentageMappingsDisplay" style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 4px; max-height: 200px; overflow-y: auto;"></div>
+                    <small class="text-muted" style="display: block; margin-top: 10px;">Click + to configure status-wise percentages</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="editModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add Item</h3>
+            <button class="close-btn" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="subIndustryNotice" style="display: none; background: #e7f3ff; border-left: 4px solid #2196F3; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
+                <div style="font-weight:600; margin-bottom:4px;">Adding Sub-Industry</div>
+                <div id="parentIndustryLabel" style="font-size:0.9rem; color:#0c5460;">Parent Industry: -</div>
+            </div>
+            <div class="form-group">
+                <label for="itemName">Name *</label>
+                <input type="text" id="itemName" class="form-input" placeholder="Enter name" required>
+            </div>
+            <div class="form-group" id="colorGroup">
+                <label for="itemColor">Color</label>
+                <input type="color" id="itemColor" class="form-input" value="#0d6efd">
+            </div>
+            <div class="form-group">
+                <label for="itemDescription">Description</label>
+                <textarea id="itemDescription" class="form-input" rows="3" placeholder="Enter description"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="itemActive" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+                <label for="itemActive">Active</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Percentage Configuration Modal -->
+<div id="percentageModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h3>Configure Status Percentages</h3>
+            <button class="close-btn" onclick="closePercentageModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="percentageStatus">Lead Status *</label>
+                <select id="percentageStatus" class="form-input" required>
+                    <option value="">-- Select Status --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="percentageValue">Percentage (0-100) *</label>
+                <input type="number" id="percentageValue" class="form-input" min="0" max="100" placeholder="e.g., 50" required>
+            </div>
+            <div id="percentagesList" style="margin-top: 20px; padding: 12px; background: #f8f9fa; border-radius: 4px; max-height: 250px; overflow-y: auto;">
+                <strong>Current Mappings:</strong>
+                <div id="percentagesListContent" style="margin-top: 8px; font-size: 0.95em;"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePercentageModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="addPercentageMapping()">Add/Update</button>
+            <button type="button" class="btn btn-success" onclick="saveAllPercentages()">Save Configuration</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/lead_settings.js?v=2.1.1"></script>
+{% endblock %}

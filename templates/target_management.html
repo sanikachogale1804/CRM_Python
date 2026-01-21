@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Target Management | Smart CRM{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/static/target_management.css?v=2.1.1">
+
+<div class="target-management-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">Performance Tracking</p>
+            <h1>Target Management</h1>
+            <p class="subtext">Set, monitor, and achieve sales targets across your team</p>
+        </div>
+        <div class="header-actions">
+            <a href="/control-panel" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Control Panel</span>
+            </a>
+            <button class="btn btn-secondary" onclick="calculateAllProgress()" title="Recalculate all targets from lead history">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh All</span>
+            </button>
+            <button class="btn btn-primary" onclick="openAddTargetModal()">
+                <i class="fas fa-plus"></i>
+                <span>Add New Target</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Target Filters -->
+    <div class="target-filters">
+        <div class="filter-group">
+            <label for="filter-type">Target Type</label>
+            <select id="filter-type" onchange="applyFilters()">
+                <option value="">All Types</option>
+                <option value="revenue">Revenue Target</option>
+                <option value="units">Units/Quantity Target</option>
+                <option value="conversion">Conversion Rate Target</option>
+                <option value="deals">Number of Deals Target</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filter-user">Assigned To</label>
+            <select id="filter-user" onchange="applyFilters()">
+                <option value="">All Team Members</option>
+                <!-- Will be populated by JavaScript -->
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filter-period">Period</label>
+            <select id="filter-period" onchange="applyFilters()">
+                <option value="">All Periods</option>
+                <option value="2025-Q1">Q1 2025</option>
+                <option value="2025-Q2">Q2 2025</option>
+                <option value="2025-Q3">Q3 2025</option>
+                <option value="2025-Q4">Q4 2025</option>
+                <option value="2025">2025 Full Year</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filter-status">Status</label>
+            <select id="filter-status" onchange="applyFilters()">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="at-risk">At Risk</option>
+                <option value="exceeded">Exceeded</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="card-header">
+                <h3>Total Targets</h3>
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <div class="card-body">
+                <div class="card-number" id="total-targets">0</div>
+                <div class="card-label">Active & Tracking</div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-header">
+                <h3>On Track</h3>
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="card-body">
+                <div class="card-number success" id="on-track-count">0</div>
+                <div class="card-label">Targets on pace</div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-header">
+                <h3>At Risk</h3>
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="card-body">
+                <div class="card-number warning" id="at-risk-count">0</div>
+                <div class="card-label">Need attention</div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-header">
+                <h3>Exceeded</h3>
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="card-body">
+                <div class="card-number success" id="exceeded-count">0</div>
+                <div class="card-label">Target surpassed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Targets List -->
+    <div class="targets-container">
+        <div class="targets-header">
+            <h2>Active Targets</h2>
+            <div class="view-options">
+                <button class="view-btn active" onclick="switchView('grid')">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-btn" onclick="switchView('list')">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid View -->
+        <div id="targets-grid" class="targets-grid">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- List View -->
+        <div id="targets-list" class="targets-list" style="display: none;">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <div id="no-targets" class="empty-state">
+            <i class="fas fa-bullseye"></i>
+            <h3>No targets found</h3>
+            <p>Create your first target to get started with performance tracking</p>
+            <button class="btn btn-primary" onclick="openAddTargetModal()">
+                <i class="fas fa-plus"></i> Create Target
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Target Modal -->
+<div id="targetModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Add New Target</h2>
+            <button class="modal-close" onclick="closeTargetModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="targetForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Choose Tab *</label>
+                        <select id="target-tab" required data-test="target-tab">
+                            <option value="">Select Tab</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Name *</label>
+                        <select id="target-name" required disabled data-test="target-name">
+                            <option value="">Select a tab first</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Type *</label>
+                        <select id="target-type" required onchange="updateTargetUnit()">
+                            <option value="">Select Type</option>
+                            <option value="revenue">Revenue Target</option>
+                            <option value="units">Units/Quantity Target</option>
+                            <option value="conversion">Conversion Rate Target</option>
+                            <option value="deals">Number of Deals Target</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Value *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="target-value" required placeholder="0" step="0.01">
+                            <span id="target-unit-display" class="unit-display"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Assigned To *</label>
+                        <select id="target-user" required>
+                            <option value="">Select User</option>
+                            <!-- Will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Period *</label>
+                        <div class="period-input-group">
+                            <select id="target-period" required>
+                                <option value="">Select Period</option>
+                                <optgroup label="Frequency">
+                                    <option value="daily">Per Day</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="yearly">Yearly</option>
+                                </optgroup>
+                                <optgroup label="Calendar Periods">
+                                    <option value="2025-Q1">Q1 2025</option>
+                                    <option value="2025-Q2">Q2 2025</option>
+                                    <option value="2025-Q3">Q3 2025</option>
+                                    <option value="2025-Q4">Q4 2025</option>
+                                    <option value="2025">2025 Full Year</option>
+                                </optgroup>
+                            </select>
+                            <button type="button" class="period-add-btn" onclick="openCustomPeriodModal()" title="Add Custom Period">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Current Progress (Optional)</label>
+                    <input type="number" id="target-current" placeholder="0" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="target-description" placeholder="Add notes or details about this target..." rows="3"></textarea>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="target-active" checked>
+                    <label for="target-active">Active Target</label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeTargetModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Target</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Target Details Modal -->
+<div id="detailsModal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 id="details-title">Target Details</h2>
+            <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="details-content">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Custom Period Modal -->
+<div id="customPeriodModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add Custom Period</h2>
+            <button class="modal-close" onclick="closeCustomPeriodModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="customPeriodForm">
+                <div class="form-group">
+                    <label>Period Name *</label>
+                    <input type="text" id="custom-period-name" required placeholder="e.g., Jan-Mar 2025, Holiday Season"/>
+                </div>
+                <div class="form-group">
+                    <label>Period Value (Internal) *</label>
+                    <input type="text" id="custom-period-value" required placeholder="e.g., 2025-jan-mar" />
+                    <small style="color: #6c757d; margin-top: 4px; display: block;">This is the internal identifier for the period</small>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="custom-period-desc" placeholder="Add notes about this period..." rows="2"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeCustomPeriodModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Period</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/target_management.js?v=2.1.1"></script>
+{% endblock %}

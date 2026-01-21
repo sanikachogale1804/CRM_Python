@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart CRM{% endblock %}</title>
+    <link rel="icon" href="/static/logo.ico">
+    <link rel="stylesheet" href="/static/style.css?v=2.1.1">
+    {% if request.url.path == '/security-audit' %}
+    <link rel="stylesheet" href="/static/security_audit.css?v=2.1.0">
+    {% endif %}
+    <script src="/static/js/common.js?v=2.1.1"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Hide permission-guarded elements until JS applies permissions (prevents flicker) */
+        body:not(.perm-ready) [data-permission],
+        body:not(.perm-ready) [data-field-permission] {
+            visibility: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 10px;
+        }
+
+        .sidebar-top {
+            text-align: center;
+        }
+
+        .sidebar-top img {
+            width: 80%;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-top .company-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-top .company-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: 10px 15px;
+            margin: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar nav a:hover, .sidebar nav a.active {
+            background-color: #084298;
+        }
+
+        /* Sidebar footer (user info + logout) */
+        .sidebar-footer {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .sidebar-footer .logout-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px 0;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-footer .logout-btn:hover {
+            background-color: #a71d2a;
+        }
+
+        /* Main content */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #084298;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <img src="/static/logo.png" alt="Logo">
+            <p class="company-name">Cogent Safety & Security Pvt Ltd</p>
+            <p class="company-tagline">Smart CRM Dashboard</p>
+            <nav>
+                <a href="/dashboard" data-permission="dashboard" class="{% if request.url.path == '/dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="/leads" data-permission="leads" class="{% if request.url.path == '/leads' %}active{% endif %}">Leads</a>
+                <a href="/control-panel" data-permission="control_panel" class="{% if request.url.path == '/control-panel' %}active{% endif %}">Control Panel</a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            <div>Logged in as: <strong>{{ user.full_name }}</strong></div>
+            <div>Role: {{ user.role }}</div>
+            <div>Email: {{ user.email }}</div>
+            <button onclick="handleLogout()" class="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    
+    <!-- Global Permission Guard Initialization -->
+    <script>
+    // Run as early as possible to avoid flicker
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.PermissionManager) {
+            window.PermissionManager.init();
+            window.PermissionManager.applyGuards();
+            document.body.classList.add('perm-ready');
+            console.log('🔐 Permission system initialized');
+        } else {
+            // If PermissionManager missing, still reveal UI to avoid locked state
+            document.body.classList.add('perm-ready');
+        }
+    });
+    </script>
+</body>
+</html>

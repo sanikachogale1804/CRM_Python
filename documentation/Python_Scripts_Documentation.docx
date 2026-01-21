@@ -1,0 +1,40 @@
+Python Scripts Documentation
+
+1. main.py
+- FastAPI routes for lead report upload, download, and listing
+- Uses database.py for DB operations
+- Handles permissions and file management for lead reports
+
+2. database.py
+- Manages MySQL database connections using PyMySQL
+- Contains connection pool logic and utility functions
+- Handles database initialization and connection errors
+
+3. analyze_lead_status.py
+- Debug script for analyzing lead status and percentage calculations
+- Fetches configured percentages and compares with actual lead statuses in DB
+
+4. check_latest_leads.py
+- Checks latest leads and lead history entries from the database
+- Uses mysql.connector for DB operations
+
+5. debug_status_percentages.py
+- Debug script to check status percentages in the database
+- Parses and validates JSON configuration for status percentages
+
+6. recalculate_lead_percentages.py
+- Recalculates all lead percentages based on current configuration
+- Updates all leads in the database with new percentages
+
+7. verify_integration.py
+- Verifies database tables and structure (uses SQLite)
+- Checks lead_settings table and sample data
+- Verifies API endpoints
+
+8. verify_lead_settings_expansion.py
+- Verifies new tabs and settings in lead_settings system
+- Checks HTML, JS functions, default data, and DB persistence
+
+Each script is used for either main application logic, database management, or debugging/verification tasks.
+
+For details, refer to the respective script files.

@@ -1,0 +1,85 @@
+CRM System Management Presentation Documentation
+
+1. Project Overview
+- Smart CRM System ek complete solution hai for sales lead management, user management, reporting, and business analytics.
+- Backend FastAPI (Python) par based hai, frontend HTML/CSS/JS templates use karta hai.
+
+2. System Architecture
+- Modular structure: Python scripts (main logic), templates (UI), static files (CSS/JS), tools (utility scripts), uploads (user/report files).
+- Database: MySQL for data storage (leads, users, targets, audit logs, reports).
+- REST API endpoints for all major features.
+
+3. Key Features
+- User Authentication & Role Management
+- Lead Management (Add, Edit, Delete, View)
+- Target Management (Set, Track, Calculate Progress)
+- Dashboard (Stats, Widgets, Recent Activities)
+- Permission Management (Admin/User roles)
+- Audit Logging (User actions, security)
+- Report Management (Upload, Download, View)
+- Security Audit (API & UI)
+
+4. Functional Flows
+A. Login Flow
+   - User enters credentials → Validation → Session create → Dashboard redirect
+B. Lead Management
+   - Add/Edit/Delete/View lead → Form validation → DB update → Audit log
+C. Target Management
+   - Set target → Assign users → Track progress → Calculate completion
+D. Dashboard
+   - Show stats, charts, widgets → Permission-based data visibility
+E. Report Management
+   - Upload PDF report → Validate file → Save to DB & uploads folder → Download/View
+F. Permission & Audit
+   - Assign/revoke permissions → Log user actions → Security audit table
+
+5. Form Fields & Validation
+- All forms have required fields, type checks, length checks, custom validation (email, phone, etc.)
+- Error messages for invalid input
+
+6. Error Handling
+- API error codes (400, 401, 403, 500)
+- User-friendly error messages
+- Database/file upload errors handled gracefully
+
+7. Security & Compliance
+- Role-based access control
+- Audit logs for all sensitive actions
+- Secure file uploads
+- CORS enabled for safe API access
+
+8. Reporting & Analytics
+- Lead status percentage calculation
+- Target progress calculation
+- Export options (PDF, Excel)
+- Dashboard analytics
+
+9. Deployment & Maintenance
+- Easy deployment (Python, FastAPI, Uvicorn)
+- Modular code for easy updates
+- Database backup & restore
+- Static files for UI customization
+
+10. Screens & UI Behavior
+- Login: Form, error, redirect
+- Dashboard: Stats, widgets, actions
+- Leads: List, add, edit, delete
+- Users: List, add, edit, permissions
+- Targets: Set, track, calculate
+- Reports: Upload, download, view
+- Settings: Configure, save, validate
+- Audit/Security: Logs, table, actions
+
+11. Future Enhancements
+- Mobile app integration
+- Advanced analytics (AI/ML)
+- Third-party integrations (email, calendar)
+- Customizable workflows
+
+12. Summary
+- Smart CRM System ek scalable, secure, aur feature-rich solution hai for sales lead management.
+- Sabhi business, security, aur reporting needs ko address karta hai.
+
+Ye documentation management presentation ke liye ready hai, jisme A to Z system overview, architecture, features, flows, security, reporting, deployment, aur future roadmap cover kiya gaya hai.
+
+Agar kisi section ka aur detail chahiye ho, ya specific slides/points chahiye ho, bata sakte hain.

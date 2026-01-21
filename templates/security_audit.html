@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Security & Audit - Smart CRM{% endblock %}
+
+{% block content %}
+<div class="security-audit-container">
+    <h2 class="sa-title"><i class="fas fa-shield-alt"></i> Security & Audit</h2>
+    <div class="sa-section">
+        <h3 class="sa-section-title">All Security & Audit Logs</h3>
+        <div id="security-audit-table" class="sa-table-container">
+            <div class="sa-loading">Loading logs...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for details -->
+<div id="sa-details-modal" class="sa-modal" style="display:none;">
+  <div class="sa-modal-content">
+    <span class="sa-modal-close" id="sa-modal-close">&times;</span>
+    <h3>Log Details</h3>
+    <pre id="sa-modal-details"></pre>
+  </div>
+</div>
+
+<script>
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/[&<>"']/g, function(tag) {
+        const chars = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'};
+        return chars[tag] || tag;
+    });
+}
+function showDetails(details) {
+    document.getElementById('sa-modal-details').textContent = details || 'No details.';
+    document.getElementById('sa-details-modal').style.display = 'block';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/security-audit-table').then(r => r.json()).then(data => {
+        const container = document.getElementById('security-audit-table');
+        if (data.success && data.rows && data.rows.length) {
+            container.innerHTML = `<table class='sa-table'><thead><tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Event</th>
+                <th>Resource</th>
+                <th>Resource ID</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>IP</th>
+                <th>User Agent</th>
+                <th>Status Code</th>
+                <th>Status</th>
+                <th>Details</th>
+                <th>Session Token</th>
+                <th>Description</th>
+            </tr></thead><tbody>` +
+                data.rows.map((row, idx) => `<tr>
+                    <td title="${escapeHTML(row.id)}">${row.id || '-'}</td>
+                    <td title="${escapeHTML(row.timestamp)}">${row.timestamp}</td>
+                    <td title="${escapeHTML(row.username)}">${row.username}</td>
+                    <td title="${escapeHTML(row.action)}">${row.action}</td>
+                    <td><span class="sa-badge sa-badge-${row.event.toLowerCase()}" title="${escapeHTML(row.event)}">${row.event}</span></td>
+                    <td class="resource" title="${escapeHTML(row.resource)}">${row.resource}</td>
+                    <td title="${escapeHTML(row.resource_id)}">${row.resource_id}</td>
+                    <td title="${escapeHTML(row.method)}">${row.method}</td>
+                    <td title="${escapeHTML(row.path)}">${row.path}</td>
+                    <td title="${escapeHTML(row.ip)}">${row.ip}</td>
+                    <td title="${escapeHTML(row.user_agent)}">${row.user_agent}</td>
+                    <td title="${escapeHTML(row.status_code)}">${row.status_code}</td>
+                    <td title="${escapeHTML(row.status)}">${row.status}</td>
+                    <td><button class="sa-details-btn" onclick="showDetails(JSON.stringify(data.rows[${idx}], null, 2))">View</button></td>
+                    <td title="${escapeHTML(row.session_token)}">${row.session_token}</td>
+                    <td title="${escapeHTML(row.description)}">${row.description}</td>
+                </tr>`).join('') +
+            `</tbody></table>`;
+        } else {
+            container.innerHTML = '<div class="sa-empty">No logs found.</div>';
+        }
+    });
+    // Modal close logic
+    document.getElementById('sa-modal-close').onclick = function() {
+        document.getElementById('sa-details-modal').style.display = 'none';
+    };
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('sa-details-modal')) {
+            document.getElementById('sa-details-modal').style.display = 'none';
+        }
+    };
+});
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+HTML Templates Documentation
+
+1. add_lead.html
+- Template for adding new leads
+- Contains form and UI for lead entry
+
+2. base.html
+- Base template for all pages
+- Includes common layout, header, and footer
+
+3. control_panel.html
+- Template for control panel interface
+
+4. dashboard.html
+- Template for dashboard view and widgets
+
+5. edit_lead.html
+- Template for editing lead details
+
+6. leads.html
+- Template for lead listing and management
+
+7. lead_detail.html
+- Template for viewing lead details
+
+8. lead_reports.html
+- Template for lead reports section
+
+9. lead_settings.html
+- Template for configuring lead settings
+
+10. login.html
+- Template for login page
+
+11. permission_management.html
+- Template for managing user permissions
+
+12. security_audit.html
+- Template for security audit features
+
+13. target_management.html
+- Template for managing targets
+
+14. users.html
+- Template for user management
+
+Each HTML template is designed for a specific page or feature in the CRM system.
+
+For details, refer to the respective HTML files.

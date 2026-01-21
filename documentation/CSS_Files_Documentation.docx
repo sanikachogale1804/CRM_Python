@@ -1,0 +1,38 @@
+CSS Files Documentation
+
+1. add_lead.css
+- Styles for add lead form and related UI
+
+2. control_panel.css
+- Styles for control panel interface
+
+3. dashboard.css
+- Styles for dashboard layout and widgets
+
+4. leads.css
+- Styles for lead listing and details
+
+5. lead_settings.css
+- Styles for lead settings configuration UI
+
+6. login.css
+- Styles for login page and form
+
+7. permission_management.css
+- Styles for permission management interface
+
+8. security_audit.css
+- Styles for security audit page
+
+9. style.css
+- Main global stylesheet for the application
+
+10. target_management.css
+- Styles for target management UI
+
+11. users.css
+- Styles for user management interface
+
+Each CSS file is focused on a specific module or feature for consistent UI design.
+
+For details, refer to the respective CSS files.
