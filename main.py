@@ -3038,53 +3038,79 @@ async def update_user_status(user_id: int, status_data: dict, current_user: dict
             raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/api/users/{user_id}")
-async def delete_user(user_id: int, current_user: dict = Depends(get_current_user)):
+async def delete_user(
+    user_id: int,
+    current_user: dict = Depends(get_current_user)
+):
     if not check_user_permission(current_user, 'can_manage_users'):
         raise HTTPException(status_code=403, detail="No permission to manage users")
-    
-    # Prevent self-deletion
+
+    # Prevent self-deactivation
     if current_user['user_id'] == user_id:
-        raise HTTPException(status_code=400, detail="Cannot delete your own account")
-    
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot deactivate your own account"
+        )
+
     with get_db_connection() as conn:
-        cursor = conn.cursor()
-        
-        # Check if user exists
-        cursor.execute('SELECT id FROM users WHERE id = %s', (user_id,))
-        if not cursor.fetchone():
+        cursor = conn.cursor()  # DictCursor already configured in connection
+
+        # 1️⃣ Check if user exists
+        cursor.execute(
+            "SELECT id, is_active FROM users WHERE id = %s",
+            (user_id,)
+        )
+        user = cursor.fetchone()
+
+        if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        
+
+        # 2️⃣ Check if already deactivated
+        if user['is_active'] == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="User already deactivated"
+            )
+
         try:
-            cursor.execute('DELETE FROM users WHERE id = %s', (user_id,))
+            # 3️⃣ SOFT DELETE (Deactivate)
+            cursor.execute(
+                "UPDATE users SET is_active = 0 WHERE id = %s",
+                (user_id,)
+            )
             conn.commit()
-            
+
+            # 4️⃣ Audit log (non-blocking)
             try:
                 log_user_activity(
                     request=None,
                     user_id=current_user['user_id'],
                     username=current_user['username'],
-                    action="delete",
+                    action="deactivate",
                     resource_type="user",
                     resource_id=str(user_id),
                     success=True,
                     status_code=200,
-                    details="User deleted",
+                    details="User deactivated",
                     session_token=current_user.get('session_token'),
                 )
             except Exception:
                 pass
+
             return {
                 "success": True,
-                "message": "User deleted successfully"
+                "message": "User deactivated successfully"
             }
+
         except Exception as e:
             conn.rollback()
+
             try:
                 log_user_activity(
                     request=None,
                     user_id=current_user['user_id'],
                     username=current_user['username'],
-                    action="delete",
+                    action="deactivate",
                     resource_type="user",
                     resource_id=str(user_id),
                     success=False,
@@ -3094,7 +3120,79 @@ async def delete_user(user_id: int, current_user: dict = Depends(get_current_use
                 )
             except Exception:
                 pass
+
             raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/api/users/{user_id}/activate")
+async def activate_user(
+    user_id: int,
+    current_user: dict = Depends(get_current_user)
+):
+    if not check_user_permission(current_user, 'can_manage_users'):
+        raise HTTPException(status_code=403, detail="No permission to manage users")
+
+    with get_db_connection() as conn:
+        cursor = conn.cursor()  # DictCursor
+
+        # 1️⃣ Check if user exists
+        cursor.execute("SELECT id, is_active FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # 2️⃣ Check if already active
+        if user['is_active'] == 1:
+            raise HTTPException(status_code=400, detail="User already active")
+
+        try:
+            # 3️⃣ Activate user
+            cursor.execute("UPDATE users SET is_active = 1 WHERE id = %s", (user_id,))
+            conn.commit()
+
+            # 4️⃣ Audit log (non-blocking)
+            try:
+                log_user_activity(
+                    request=None,
+                    user_id=current_user['user_id'],
+                    username=current_user['username'],
+                    action="activate",
+                    resource_type="user",
+                    resource_id=str(user_id),
+                    success=True,
+                    status_code=200,
+                    details="User activated",
+                    session_token=current_user.get('session_token'),
+                )
+            except Exception:
+                pass
+
+            return {
+                "success": True,
+                "message": "User activated successfully"
+            }
+
+        except Exception as e:
+            conn.rollback()
+            try:
+                log_user_activity(
+                    request=None,
+                    user_id=current_user['user_id'],
+                    username=current_user['username'],
+                    action="activate",
+                    resource_type="user",
+                    resource_id=str(user_id),
+                    success=False,
+                    status_code=500,
+                    details=str(e),
+                    session_token=current_user.get('session_token'),
+                )
+            except Exception:
+                pass
+
+            raise HTTPException(status_code=500, detail=str(e))
+
+
 
 @app.get("/api/dashboard/stats")
 async def get_dashboard_stats(user: dict = Depends(get_current_user)):

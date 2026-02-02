@@ -118,7 +118,7 @@
     @media (max-width: 520px)  { .kpi-grid { grid-template-columns: 1fr; } }
 </style>
 
-<h1 class="page-title">Dashboard</h1>
+<h1 class="page-title">Sales Dashboard</h1>
 
 <!-- KPI Cards -->
 <div class="kpi-grid" data-permission="dashboard.view_kpis">
@@ -269,7 +269,7 @@
         var totalLeads = {{ stats.total_leads|default(0) }};
 
         // Aggregate grouped KPIs
-        var newCount = (statusCounts['New'] || statusCounts['new'] || 0);
+        var newCount = (statusCounts['New'] || statusCounts['new'] || statusCounts['New Lead Generation'] || 0);
         var activeCount = (statusCounts['Contacted'] || 0) + (statusCounts['Proposal Sent'] || 0) + (statusCounts['Negotiation'] || 0);
         var convertedCount = (statusCounts['Converted'] || 0) + (statusCounts['Closed'] || 0);
 
